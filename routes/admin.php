@@ -34,4 +34,13 @@ match ($action) {
     'shoes-edit'     => (new ShoeController)->edit(),    // Hiển thị form cập nhật theo ID
     'shoes-update'   => (new ShoeController)->update(),  // Lưu dữ liệu cập nhật theo ID
     'shoes-delete'   => (new ShoeController)->delete(),  // Xóa dữ liệu theo ID
+
+     // 🔥 Thêm route xử lý Category
+        'categories-index'  => (new CategoryController)->index(),
+        'categories-show'   => (new CategoryController)->show(),
+        'categories-create' => (new CategoryController)->create(),
+        'categories-store'  => (new CategoryController)->store(),
+        'categories-edit'   => (new CategoryController)->edit(),
+        'categories-update' => (new CategoryController)->update(),
+        'categories-delete' => (new CategoryController)->delete(),
 };
