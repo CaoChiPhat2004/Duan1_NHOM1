@@ -1,14 +1,30 @@
 <?php
 
+use Rakit\Validation\Validator;
+
 class AuthenController
 {
+    protected $connection;
+    protected $table;
     private $user;
 
     public function __construct()
     {
         $this->user = new User();
     }
+    public function validate($validator, $data, $rules)
+    {
+        $validation = $validator->make($data, $rules);
 
+        // then validate
+        $validation->validate();
+
+        if ($validation->fails()) {
+            return $validation->errors()->firstOfAll();
+        }
+
+        return [];
+    }
     public function showFormLogin()
     {
         $view = 'authen/form-login';
@@ -16,52 +32,80 @@ class AuthenController
 
         require_once PATH_VIEW_ADMIN_MAIN;
     }
+    public function checkExistsEmailForCreate($email)
+    {
+        $queryBuilder = $this->connection->createQueryBuilder();
 
+
+        $queryBuilder->select('COUNT(*)')
+            ->from($this->table)
+            ->where('email = :email')
+            ->setParameter('email', $email);
+
+        $result = $queryBuilder->fetchOne();
+
+
+        return $result > 0;
+    }
+    public function logError($message)
+    {
+        $date = date('d-m-Y');
+
+        $message = date('d-m-Y H:i:s') . ' - ' . $message . PHP_EOL;
+
+        // Type: 3 - Ghi vào file
+        error_log($message, 3, "storage/logs/$date.log");
+    }
     public function login()
     {
         try {
-            if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-                throw new Exception('Yêu cầu phương thức phải là POST');
-            }
-
-            $email      = $_POST['email'] ?? null;
-            $password   = $_POST['password'] ?? null;
-
-            if (empty($email) || empty($password)) {
-                throw new Exception('Email và Password không được để trống!');
-            }
-
-            $user = $this->user->find(
-                '*',
-                'email = :email AND password = :password',
+            $data = $_POST;
+            $validator = new Validator;
+            $errors = $this->validate(
+                $validator,
+                $data,
                 [
-                    'email'     => $email,
-                    'password'  => $password
+                    'email'    => ['required', 'email'],
+                    'password' => 'required|min:6|max:30',
                 ]
             );
+            $user = $this->user->getUserByEmail($data['email']);
+            $checkPass = password_verify($data['password'], $user['password'] ?? null);
 
-            if (empty($user)) {
-                throw new Exception('Thông tin tài khoản không đúng!');
+            if (!empty($errors) || empty($user) || !$checkPass) {
+                $_SESSION['status']     = false;
+                $_SESSION['msg']        = 'Thao tác KHÔNG thành công!';
+                $_SESSION['data']       = $_POST;
+                $_SESSION['errors']     = $errors;
+
+                if (empty($user) && !isset($_SESSION['errors']['email'])) {
+                    $_SESSION['errors']['email'] = 'Email does not exist!';
+                }
+                if (isset($user['password']) && !$checkPass && !isset($_SESSION['errors']['password'])) {
+                    $_SESSION['errors']['verify'] = 'Incorrect password!';
+                }
+                redirect('/authen');
+            } else {
+                $_SESSION['data'] = null;
             }
-
             $_SESSION['user'] = $user;
 
-            header('Location: ' . BASE_URL_ADMIN);
-            exit();
+            $redirectTo = ($_SESSION['user']['type'] == 'admin') ? '/admin' : '/';
+            redirect($redirectTo);
         } catch (\Throwable $th) {
-            $_SESSION['success'] = false;
-            $_SESSION['msg'] = $th->getMessage();
+            $this->logError($th->__tostring());
 
-            header('Location: ' . BASE_URL_ADMIN . '&action=show-form-login');
-            exit();
+            $_SESSION['status'] = false;
+            $_SESSION['msg'] = 'Thao tác KHÔNG thành công!';
+            $_SESSION['data'] = $_POST;
+
+            redirect('/authen');
         }
     }
-
     public function logout()
     {
-        session_destroy();  // hủy session trên máy chủ bao gồm cả session ID.
+        unset($_SESSION['user']);
 
-        header('Location: ' . BASE_URL);
-        exit();
+        redirect('/');
     }
 }
