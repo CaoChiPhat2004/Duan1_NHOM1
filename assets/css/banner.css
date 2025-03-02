@@ -1,0 +1,97 @@
+/* Slideshow Background */
+.slide-content {
+    position: relative;
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+}
+
+/* Text Styling */
+.text-white {
+    color: #fff;
+}
+
+.slide-subtitle {
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.slide-title {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.slide-description {
+    font-size: 16px;
+    margin-bottom: 20px;
+    max-width: 500px;
+}
+
+/* Button Styling */
+.site-btn {
+    display: inline-block;
+    padding: 10px 25px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 5px;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.sb-line {
+    border: 2px solid white;
+    color: white;
+    background: transparent;
+}
+
+.sb-line:hover {
+    background: white;
+    color: black;
+}
+
+.sb-white {
+    background: white;
+    color: black;
+}
+
+.sb-white:hover {
+    background: #ff4d6d;
+    color: white;
+}
+
+/* Offer Card */
+.offer-card {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background: #ff4d6d;
+    padding: 15px 20px;
+    border-radius: 50%;
+    text-align: center;
+}
+
+.offer-card h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.offer-card span {
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.offer-card p {
+    font-size: 14px;
+    font-weight: bold;
+}

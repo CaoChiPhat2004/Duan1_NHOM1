@@ -1,0 +1,26 @@
+.product-card {
+    border: none;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+.product-card:hover {
+    transform: scale(1.05);
+}
+.product-img {
+    height: 250px;
+    object-fit: cover;
+}
+.action-icons {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+.action-icons a {
+    background: white;
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
