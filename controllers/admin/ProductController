@@ -1,1 +1,12 @@
+<?php
+class ProductController {
+    public function index() {
+        require_once __DIR__ . '/../models/ProductModel.php'; // Sửa đường dẫn
+
+        $productModel = new ProductModel();
+        $products = $productModel->getAll(); // Lấy tất cả sản phẩm
+
+        require_once __DIR__ . '/../views/products.php'; // Sửa đường dẫn
+    }
+}
 
